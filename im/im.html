@@ -40,13 +40,16 @@ SDK 文档：http://www.rongcloud.cn/docs/web.html#sdk
     - 其他 demo https://github.com/rongcloud/websdk-demo
 */    
 (function(){
-    var appKey = "3argexb6r934e";
-    var token = "b/jvjEFD41TIVT0nsf9+L3ryPPkHsvRwWZV8SVI5ICcZ2I5Nl4OdNO01OjZxjjmVlD2dmk4RZ90=";
+    var appKey = "n19jmcy5n8no9";
+    // var token = "TFPNwHpdzdMos21ops0ODjGi52sqvDj8IdvqoN9oS0UGIqGcwnugoBMVUcoDBG+MVnZF/KpJHpY=";
+    var token = RCS.getPara(window.location.href, 'token')
+    var targetUserId = RCS.getPara(window.location.href, 'targetUserId')
 
     RCS.init({
         appKey: appKey,
         token: token,
         target: document.getElementById('rcs-app'),
+        targetUserId: targetUserId,
         showConversitionList: true,
         templates: {
             button: ['<div class="rongcloud-consult rongcloud-im-consult">',

@@ -376,8 +376,9 @@
 		  onSuccess: function(list, hasMsg) {
 		  	conversation.messageContent = list.concat(conversation.messageContent);
 		  	callbacks(list,hasMsg);
-		  },
-		  onError: function(error) {
+		},
+		onError: function(error) {
+			callbacks([], false);
 		    console.log("GetHistoryMessages,errorcode:" + error);
 		  }
 		});
@@ -748,7 +749,7 @@
 		}
 	}
 
-	var sendTextMessage = function(instance){
+	var sendTextMessage = function(instance, targetId){
 		var content = {
 			content: [
 				"这是一条测试各种字符的消息",
@@ -766,7 +767,7 @@
 		var msg = new RongIMLib.TextMessage(content);
 
 		var conversationType = RongIMLib.ConversationType.PRIVATE; // 私聊
-		var targetId = "bb";
+		// var targetId = "1";
 		instance.sendMessage(conversationType, targetId, msg, {
 	        onSuccess: function (message) {
 	        	console.log(message);
@@ -782,6 +783,7 @@
 		RCS.config = config;
 		config.isIM = true;
 		var callbacks = {
+			targetUserId: config.targetUserId,
 			getInstance: function(instance){
 				var callback = function(){
 					if (RCS.config.templates) {
@@ -795,7 +797,7 @@
 				createButton(config);
 
 				//发送一条消息，为了确保有会话，实际使用时请删除
-				sendTextMessage(instance);
+				sendTextMessage(instance, this.targetUserId);
 			},
 			getCurrentUser: function(userId){
 				showInfo(userId);
@@ -821,6 +823,26 @@
 		dialog.appendChild(userInfo);
 		document.body.appendChild(dialog);
 	}
+	/**
+	 * 获取url上的参数
+	 * http://localhost:9528/#/message/index?accessToken=SDFSDF
+	 */
+	var getPara = function(url, parasKey) {
+		url = url + '#'
+		var i, j
+		url = url.substring(0, url.lastIndexOf('#'))
+		var paraString = url.substring(url.indexOf('?') + 1, url.length).split('&')
+		var paraObj = {}
+		for (i = 0; j = paraString[i]; i++) {
+		paraObj[j.substring(0, j.indexOf('=')).toLowerCase()] = j.substring(j.indexOf('=') + 1, j.length)
+		}
+		var returnValue = paraObj[parasKey.toLowerCase()]
+		if (typeof returnValue === 'undefined') {
+		return ''
+		} else {
+		return returnValue
+		}
+	}
 
 	//对外暴露
 	RCS.init = init;
@@ -843,4 +865,5 @@
 	RCS.escImageView = escImageView;
 	RCS.keyboard = keyboard;
 	RCS.startConversation = startConversation;
+	RCS.getPara = getPara;
 })(RCS);
